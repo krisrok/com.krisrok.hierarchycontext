@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Hextant;
+using SerializableSettings;
 using UnityEngine;
 
 namespace Navigation
 {
     public class Formatter
     {
+        private static NavigationSettings _settings => _settings;
+
         private delegate string Replac0r(Match replaceMatch, IEnumerable<string> stateParts, Dictionary<string, object> userData);
 
         private static readonly RegexOptions _defaultOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
@@ -31,18 +33,18 @@ namespace Navigation
                     }
                     if (replaceMatch.Groups["IdsSiblings"].Captures.Count > 0)
                     {
-                        stateParts = stateParts.Take(stateParts.Count() - 1).Append(Settings<NavigationSettings>.instance.FragmentRegexPattern);
+                        stateParts = stateParts.Take(stateParts.Count() - 1).Append(_settings.FragmentRegexPattern);
                     }
-                    return string.Join(Settings<NavigationSettings>.instance.Separator, stateParts);
+                    return string.Join(_settings.Separator, stateParts);
                 }
             },
             {
                 new Regex("({d})", _defaultOptions),
-                (Match replaceMatch, IEnumerable<string> stateParts, Dictionary<string, object> userData) => Settings<NavigationSettings>.instance.Separator
+                (Match replaceMatch, IEnumerable<string> stateParts, Dictionary<string, object> userData) => _settings.Separator
             },
             {
                 new Regex("({f})", _defaultOptions),
-                (Match replaceMatch, IEnumerable<string> stateParts, Dictionary<string, object> userData) => Settings<NavigationSettings>.instance.FragmentRegexPattern
+                (Match replaceMatch, IEnumerable<string> stateParts, Dictionary<string, object> userData) => _settings.FragmentRegexPattern
             },
             {
                 new Regex("({(?<UserDataKey>\\w+)})", _defaultOptions),
@@ -69,7 +71,7 @@ namespace Navigation
             {
                 return format;
             }
-            string[] stateParts = state.Split(new string[1] { Settings<NavigationSettings>.instance.Separator }, StringSplitOptions.None).ToArray();
+            string[] stateParts = state.Split(new string[1] { _settings.Separator }, StringSplitOptions.None).ToArray();
             string result = format;
             foreach (KeyValuePair<Regex, Replac0r> p in _replacePairs)
             {
