@@ -1,9 +1,7 @@
-﻿using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
-using Sirenix.Utilities.Editor;
+﻿using OdinAddons;
+using Sirenix.OdinInspector;
 using System;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace Navigation

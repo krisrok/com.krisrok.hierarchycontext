@@ -2,7 +2,8 @@
     "name": "HierarchyContext",
     "rootNamespace": "",
     "references": [
-        "GUID:5cb2ec59697a4f9438a8f30dc412b4a9"
+        "GUID:5cb2ec59697a4f9438a8f30dc412b4a9",
+        "GUID:9354aaafc9c0352438c1a1bb51edd6f6"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
