@@ -6,12 +6,14 @@ using UnityEngine;
 using Sirenix.OdinInspector.Editor;
 #endif
 
-namespace Navigation
+namespace HierarchyContext
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]
-    public class ContextNode3 : MonoBehaviour, IContextProvider, IDestroyable
+    public class ContextNode : MonoBehaviour, IContextProvider, IDestroyable
     {
+        private static HierarchyContextSettings _settings => HierarchyContextSettings.Instance;
+
         [LabelText("Use parent Context Provider")]
         [OnInspectorGUI("@EditorGUI.LabelField($property.LastDrawnValueRect, new GUIContent(string.Empty, \"Auto fill from parent context\"))")]
         [SerializeField, OnValueChanged(nameof(UpdateContext))]
@@ -79,7 +81,7 @@ namespace Navigation
             }
         }
 
-        public bool IsValid => IsValidFragment(_fragment).IsValid && NavigationSettings.instance.IsValidContext(Context);
+        public bool IsValid => IsValidFragment(_fragment).IsValid && _settings.IsValidContext(Context);
 
         public event IContextProvider.ContextChangedEventHandler ContextChanged;
 
@@ -129,7 +131,7 @@ namespace Navigation
 
             if (_autoFillFromParentContext && parentContext != null)
             {
-                _context = string.Join(NavigationSettings.instance.Separator, parentContext, fragment);
+                _context = string.Join(_settings.Separator, parentContext, fragment);
             }
             else
             {
@@ -198,7 +200,7 @@ namespace Navigation
                 };
             }
 
-            var isValidFragment = _autoFillFromParentContext == false ? NavigationSettings.instance.IsValidContext(fragment) : NavigationSettings.instance.IsValidFragment(fragment);
+            var isValidFragment = _autoFillFromParentContext == false ? _settings.IsValidContext(fragment) : _settings.IsValidFragment(fragment);
             if (isValidFragment == false)
             {
                 if (hasFormatted)

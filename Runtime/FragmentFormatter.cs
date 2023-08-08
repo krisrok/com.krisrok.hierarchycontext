@@ -2,48 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using SerializableSettings;
 using UnityEngine;
 
-namespace Navigation
+namespace HierarchyContext
 {
     public class FragmentFormatter
     {
+        private static HierarchyContextSettings _settings => HierarchyContextSettings.Instance;
+
         private delegate string Replac0r(Match replaceMatch, GameObject gameObject);
 
         private static readonly RegexOptions _defaultOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled;
 
         private static Dictionary<Regex, Replac0r> _replacePairs = new Dictionary<Regex, Replac0r>
         {
-            //{
-            //    new Regex("({(?<TakeLast>(PARENT\\.|\\^))*(STATE|S|0)(?<SkipLast>\\.PARENT|\\^)*(?<IdsSiblings>\\.SIBLINGS|~)*\\})", _defaultOptions),
-            //    delegate(Match replaceMatch, IEnumerable<string> stateParts, Dictionary<string, object> userData)
-            //    {
-            //        if (replaceMatch.Groups["TakeLast"].Captures.Count > 0)
-            //        {
-            //            int count = replaceMatch.Groups["TakeLast"].Captures.Count;
-            //            stateParts = stateParts.Skip(stateParts.Count() - count);
-            //        }
-            //        if (replaceMatch.Groups["SkipLast"].Captures.Count > 0)
-            //        {
-            //            int count2 = replaceMatch.Groups["SkipLast"].Captures.Count;
-            //            stateParts = stateParts.Take(stateParts.Count() - count2);
-            //        }
-            //        if (replaceMatch.Groups["IdsSiblings"].Captures.Count > 0)
-            //        {
-            //            stateParts = stateParts.Take(stateParts.Count() - 1).Append(Settings<NavigationSettings>.instance.FragmentRegexPattern);
-            //        }
-            //        return string.Join(Settings<NavigationSettings>.instance.Separator, stateParts);
-            //    }
-            //},
             {
                 new Regex("{N(AME)?}", _defaultOptions),
                 delegate(Match replaceMatch, GameObject gameObject)
                 {
-                    if(NavigationSettings.instance.IsValidFragment(gameObject.name))
+                    if(_settings.IsValidFragment(gameObject.name))
                         return gameObject.name;
 
-                    var validParts = Regex.Matches(gameObject.name, NavigationSettings.instance.FragmentRegexPattern)
+                    var validParts = Regex.Matches(gameObject.name, _settings.FragmentRegexPattern)
                         .Select(m => m.Value)
                         .ToArray();
 

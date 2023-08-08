@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Navigation
+namespace HierarchyContext
 {
     [Serializable]
     [InlineProperty]
