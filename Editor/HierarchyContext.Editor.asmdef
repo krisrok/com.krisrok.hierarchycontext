@@ -1,0 +1,16 @@
+{
+    "name": "HierarchyContext.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9849bf9f80e90154693b6ede8b9aaf3c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

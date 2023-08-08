@@ -1,0 +1,16 @@
+{
+    "name": "HierarchyContext",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5cb2ec59697a4f9438a8f30dc412b4a9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
