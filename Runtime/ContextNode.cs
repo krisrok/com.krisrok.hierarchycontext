@@ -120,6 +120,9 @@ namespace HierarchyContext
             InitContextProviderProperty(allowContextChangeImmediately: false);
             var parentContext = _contextProviderProperty.Context;
 
+            if (_fragment == null)
+                ResetFragment();
+
             var validationResult = IsValidFragment(_fragment);
             if(validationResult.IsValid == false)
             {
@@ -155,7 +158,12 @@ namespace HierarchyContext
 
         private void Reset()
         {
-            _fragment = gameObject.name;
+            ResetFragment();
+        }
+
+        private void ResetFragment()
+        {
+            _fragment = _settings.UseDefaultFragmentFormat ? _settings.DefaultFragmentFormat : _settings.DefaultFragment;
         }
 
         private void OnValidate()

@@ -107,5 +107,23 @@ namespace HierarchyContext
             result = Format(format, gameObject);
             return result != format;
         }
+
+        internal static string SimpleFormat(string format, string replacement)
+        {
+            if (!format.Contains("{"))
+            {
+                return format;
+            }
+            string result = format;
+            foreach (KeyValuePair<Regex, Replac0r> p in _replacePairs)
+            {
+                result = p.Key.Replace(result, replacement);
+                if (!result.Contains("{"))
+                {
+                    break;
+                }
+            }
+            return result;
+        }
     }
 }
