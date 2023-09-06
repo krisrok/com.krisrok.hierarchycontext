@@ -48,7 +48,6 @@ namespace HierarchyContext
         public bool IsValidFragmentFormat(string fragmentFormat)
         {
             var b = FragmentFormatter.SimpleFormat(fragmentFormat, _defaultFragment);
-            Debug.Log(b);
             return IsValidFragment(b); 
         }
 
