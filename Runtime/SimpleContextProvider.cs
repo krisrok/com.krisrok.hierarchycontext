@@ -1,4 +1,5 @@
 ﻿using HierarchyContext;
+using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.Scripting.APIUpdating;
 namespace HierarchyContext
 {
     [Serializable]
+    [JsonObject(MemberSerialization.OptIn)]
     public class SimpleContextProvider : IContextProvider
     {
         [SerializeField, OnValueChanged(nameof(RaiseContextChanged)), ValidateInput(nameof(IsValid))]

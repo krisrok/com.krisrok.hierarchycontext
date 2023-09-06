@@ -1,6 +1,7 @@
 using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
+using Newtonsoft.Json;
 
 #if UNITY_EDITOR
 using Sirenix.OdinInspector.Editor;
@@ -10,6 +11,7 @@ namespace HierarchyContext
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]
+    [JsonObject(MemberSerialization.OptIn)]
     public class ContextNode : MonoBehaviour, IContextProvider, IDestroyable
     {
         private static HierarchyContextSettings _settings => HierarchyContextSettings.Instance;
