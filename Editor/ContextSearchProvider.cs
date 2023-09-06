@@ -20,6 +20,7 @@ namespace HierarchyContext.Editor
                 onDisable = OnDisable,
                 trackSelection = (item, context) => PingItem(item),
                 toObject = ToObject,
+#if UNITY_2022_2_OR_NEWER
                 fetchPreview = (item, context, size, options) =>
                 {
                     var obj = item.data as GameObject;
@@ -27,6 +28,7 @@ namespace HierarchyContext.Editor
                         return item.thumbnail;
                     return SearchUtils.GetSceneObjectPreview(obj, size, options, item.thumbnail);
                 },
+#endif
                 fetchItems = (context, items, provider) => FetchItems(context, provider)
             };
         }
