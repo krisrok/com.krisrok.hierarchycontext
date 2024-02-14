@@ -45,7 +45,7 @@ namespace HierarchyContext
                 }
             },
             {
-                new Regex("{R:(?<Pattern>.+?)(?::(?<Format>.+))?}", _defaultOptions),
+                new Regex("{R:(?<Pattern>(?:(?!::).)+)(?:::(?<Format>.+))?}", _defaultOptions),
                 delegate(Match replaceMatch, GameObject gameObject)
                 {
                     var pattern = replaceMatch.Groups["Pattern"].Value;
@@ -68,7 +68,7 @@ namespace HierarchyContext
                             if(match.Groups.Count == 1)
                                 return string.Format(format, match.Groups[0].Value);
 
-                            return string.Format(format, match.Groups.Skip(1).Select(g => g.Value).ToArray());
+                            return string.Format(format, match.Groups.Select(g => g.Value).ToArray());
                         }
                         catch(Exception fe)
                         {
