@@ -7,7 +7,20 @@ namespace HierarchyContext
     public abstract class ContextListenerBase : MonoBehaviour
     {
         [SerializeField, PropertySpace(0, 8)]
-        protected ContextProviderProperty _contextProviderProperty = new ContextProviderProperty();
+        private ContextProviderProperty _contextProviderProperty = new ContextProviderProperty();
+
+        protected string Context
+        {
+            get
+            {
+                if(_contextProviderProperty.IsInited == false)
+                {
+                    _contextProviderProperty.Init(this, OnContextChanged, allowContextChangedImmediately: true);
+                }
+
+                return _contextProviderProperty.Context;
+            }
+        } 
 
         protected virtual void OnEnable()
         {
