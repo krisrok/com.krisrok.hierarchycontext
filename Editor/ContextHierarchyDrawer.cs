@@ -1,41 +1,46 @@
 using UnityEditor;
 using UnityEngine;
+using static EditorAddons.Editor.HierarchyIcons;
 
 namespace HierarchyContext.Editor
 {
     [InitializeOnLoad]
-    class ContextHierarchyDrawer
+    class ContextHierarchyDrawer : IDrawer
     {
+        private static GUIStyle _normalStyle;
+        private static GUIStyle _invalidStyle;
+
         static ContextHierarchyDrawer()
         {
-            EditorApplication.hierarchyWindowItemOnGUI += HierarchyItemCB;
+            RegisterDrawer(new ContextHierarchyDrawer());
         }
 
-        static void HierarchyItemCB(int instanceID, Rect selectionRect)
+        public DrawerAlignment Alignment => DrawerAlignment.AfterLabel;
+        public int Priority => 10;
+        public float MinWidth => 0;
+
+        public Rect Draw(Rect rect, GameObject go)
         {
-            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-
-            if (go == null)
-                return;
-
             var contextProvider = go.GetComponent<IContextProvider>();
             if (contextProvider == null)
-                return;
+                return rect;
 
-            Rect r = new Rect(selectionRect);
-            r.xMin += 16 + EditorStyles.largeLabel.CalcSize(new GUIContent(go.name)).x;
+            if(_normalStyle == null)
+            {
+                _normalStyle = new GUIStyle(EditorStyles.miniLabel);
+                _normalStyle.normal.textColor = Color.grey;
+
+                _invalidStyle = new GUIStyle(EditorStyles.miniLabel);
+                _invalidStyle.normal.textColor = Color.red;
+            }
 
             var guiContent = new GUIContent(contextProvider.Context);
-            var style = new GUIStyle(EditorStyles.miniLabel);
-            if (contextProvider.IsValid)
-            {
-                style.normal.textColor = Color.grey;
-            }
-            else
-            {
-                style.normal.textColor = Color.red;
-            }
-            GUI.Label(r, guiContent, style);
+            var style = contextProvider.IsValid ? _normalStyle : _invalidStyle;
+            var size = style.CalcSize(guiContent);
+            rect.xMax += size.x;
+            GUI.Label(rect, guiContent, style);
+
+            return rect;
         }
     }
 }

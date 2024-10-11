@@ -2,7 +2,8 @@
     "name": "HierarchyContext.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:9849bf9f80e90154693b6ede8b9aaf3c"
+        "GUID:9849bf9f80e90154693b6ede8b9aaf3c",
+        "GUID:39e94af5a9324fe479d3335abb4988ff"
     ],
     "includePlatforms": [
         "Editor"
