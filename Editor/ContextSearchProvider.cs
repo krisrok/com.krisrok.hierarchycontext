@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Search;
@@ -45,29 +46,48 @@ namespace HierarchyContext.Editor
         static SearchProvider sceneProvider = null;
         static Texture2D lightTexture = EditorGUIUtility.FindTexture("Lighting");
 
-        private static IEnumerable<SearchItem> FetchItems(SearchContext context, SearchProvider provider)
+        private static IEnumerable<SearchItem> FetchItems(SearchContext searchContext, SearchProvider provider)
         {
-            ; if (sceneProvider == null)
+            if (sceneProvider == null)
                 sceneProvider = SearchService.GetProvider("scene");
 
-            if (string.IsNullOrEmpty(context.searchQuery) || sceneProvider == null)
+            if (string.IsNullOrEmpty(searchContext.searchQuery) || searchContext.searchText.StartsWith("c:") == false || sceneProvider == null)
                 yield break;
 
-            var regex = new Regex(WildCardToRegular(context.searchQuery), RegexOptions.IgnoreCase);
+            var regex = new Regex(searchContext.searchQuery, RegexOptions.IgnoreCase);
 
             using (var innerContext = SearchService.CreateContext(sceneProvider, $"h:t:{nameof(ContextNode)}"))
             using (var results = SearchService.Request(innerContext))//$"h:t:{nameof(ContextNode3)}"))
             {
                 foreach (var r in results)
                 {
-                    var contextNode = (EditorUtility.InstanceIDToObject(int.Parse(r.id)) as GameObject)?.GetComponent<ContextNode>();
+                    if (r == null)
+                    {
+                        yield return null;
+                        continue;
+                    }
+
+                    var go = EditorUtility.InstanceIDToObject(int.Parse(r.id)) as GameObject;
+
+                    if (go == null)
+                        yield return null;
+
+                    var contextNode = go.GetComponent<ContextNode>();
                     if (contextNode != null)
                     {
 
-                        if (regex.IsMatch(contextNode.Context))
-                            yield return provider.CreateItem(context, r.id, contextNode.Context.CompareTo(context.searchQuery),
-                                r.GetLabel(innerContext, true), contextNode.Context,
+                        var match = regex.Match(contextNode.Context);
+                        if (match.Success)
+                        {
+
+                            var item = provider.CreateItem(searchContext, r.id, contextNode.Context.CompareTo(searchContext.searchQuery),
+                                r.GetLabel(innerContext, true),
+                                HighlightDescription(contextNode.Context, match),
                                 null, contextNode.gameObject);
+                            //item.options = SearchItemOptions.
+                            //item.options ^= SearchItemOptions.
+                            yield return item;
+                        }
                         //yield return provider.CreateItem(context, r.id,
                         //    r.GetLabel(innerContext, true), r.GetDescription(innerContext, true),
                         //    lightTexture, null);
@@ -80,6 +100,21 @@ namespace HierarchyContext.Editor
                 }
             }
         }
+
+        private static string HighlightDescription(string context, Match match)
+        {
+            Group group = match.Groups[0];
+
+            var result = "<color=lime>" + group.Value + "</color>";
+            if (group.Index > 0)
+                result = context.Substring(0, match.Index) + result;
+
+            if (group.Index + group.Length < context.Length)
+                result = result + context.Substring(group.Index + group.Length);
+
+            return result;
+        }
+
 
         private static String WildCardToRegular(String value)
         {
